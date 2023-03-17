@@ -2,7 +2,7 @@ Option Explicit
 
 ' 将xls文件批量转为xlsx格式
 ' 操作：支持拖放单xls文件/多xls文件/目录/混合
-' 注意：本机需要安装Office2007+；转换xlsx后会自动删除旧xls文件
+' 注意：本机需要安装Office2007+或WPS；转换xlsx后会自动删除旧xls文件
 ' 更新：https://github.com/playGitboy/xls2xlsx
 Sub main()
 	Dim objArgs,objArg
@@ -55,6 +55,8 @@ Function convertOfficeFile(Path)
 End Function
 
 Function convertXlsToXlsx(Path)
+    On Error Resume Next
+    ' 不可或缺否则CreateObject找不到对象时脚本报错中断
     Dim Objshell, ParentFolder, BaseName, XlsApp, Doc, XlsxPath
     Set Objshell = CreateObject("scripting.filesystemobject")
     ParentFolder = Objshell.GetParentFolderName(Path)
@@ -62,6 +64,9 @@ Function convertXlsToXlsx(Path)
     XlsxPath = parentFolder & "\" & BaseName & ".xlsx"
     If not FileExists(XlsxPath) Then
         Set XlsApp = CreateObject("Excel.application")
+        If XlsApp Is Nothing Then
+        	Set XlsApp = CreateObject("ket.application")
+        End If
         Set Doc = XlsApp.Workbooks.Open(Path)
         Doc.SaveAs XlsxPath,51
         Doc.close False
