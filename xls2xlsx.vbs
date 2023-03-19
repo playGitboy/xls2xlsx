@@ -66,6 +66,10 @@ Function convertXlsToXlsx(Path)
         Set XlsApp = CreateObject("Excel.application")
         If XlsApp Is Nothing Then
         	Set XlsApp = CreateObject("ket.application")
+        	If XlsApp Is Nothing Then
+			MsgBox " 本机未安装Office2007+或者WPS，转换失败！",48,"注意"
+			WScript.quit
+	        End If
         End If
         Set Doc = XlsApp.Workbooks.Open(Path)
         Doc.SaveAs XlsxPath,51
